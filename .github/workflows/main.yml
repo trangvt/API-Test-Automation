@@ -31,7 +31,7 @@ jobs:
 
       # Bước 4: Chạy Postman collection
       - name: Run Postman collection
-        run: newman run ./tests/api_collection.json -r htmlextra --reporter-htmlextra-export ./reports/report.html
+        run: newman run .\tests\api_collection.json -r htmlextra --reporter-htmlextra-export ./reports/report.html
         #run: newman run ./tests/api_collection.json -e ./tests/environment.json
 
       - name: Upload test report
