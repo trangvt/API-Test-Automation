@@ -1,17 +1,42 @@
-name: Automated API tests using Postman CLI
+name: API Automation Tests with Postman
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  automated-api-tests:
+  test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Postman CLI
-        run: |
-          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-      - name: Login to Postman CLI
-        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-      - name: Run API tests
-        run: |
-          postman collection run "685238-d700848f-d9ad-4694-97c3-7b87caa93dfd"
+      # Bước 1: Checkout mã nguồn từ repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Bước 2: Cài đặt Node.js (Newman yêu cầu Node.js)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Bước 3: Cài đặt Newman
+      - name: Install Newman
+        run: npm install -g newman
+      - name: Install Newman Report
+        run: npm install -g newman-reporter-htmlextra
+
+      # Bước 4: Chạy Postman collection
+      - name: Run Postman collection
+        run: newman run ./tests/api_collection.json -e ./tests/environment.json -r htmlextra --reporter-htmlextra-export ./reports/report.html
+        #run: newman run ./tests/api_collection.json -e ./tests/environment.json
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-report
+          path: reports/
