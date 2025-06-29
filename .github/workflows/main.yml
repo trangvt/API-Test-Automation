@@ -24,15 +24,18 @@ jobs:
           node-version: '20'
 
       # Bước 3: Cài đặt Newman
-      - name: Install Newman
-        run: npm install -g newman
-      - name: Install Newman Report
-        run: npm install -g newman-reporter-htmlextra
+      - name: Install Newman and reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Create reports directory
+        run: mkdir -p reports
 
       # Bước 4: Chạy Postman collection
       - name: Run Postman collection
-        run: newman run ./tests/api_collection.json 
-        #run: newman run ./tests/api_collection.json -r htmlextra --reporter-htmlextra-export ./reports/report.html
+        #run: newman run ./tests/api_collection.json 
+        run: newman run ./tests/api_collection.json -r htmlextra --reporter-htmlextra-export ./reports/report.html
         #run: newman run ./tests/api_collection.json -e ./tests/environment.json
 
       - name: Upload test report
@@ -40,4 +43,4 @@ jobs:
         if: always()
         with:
           name: newman-report
-          path: reports/
+          path: reports/report.html
