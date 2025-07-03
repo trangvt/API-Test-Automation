@@ -51,5 +51,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: newman-report
-          path: reports/report.html
+          path: reports/report.html #https://trangvt.github.io/API-Test-Automation/reports/report.html
         if: always()
